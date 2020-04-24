@@ -53,7 +53,7 @@ func (c *Config) Write(message string, callback func(bool)) {
 		return
 	}
 
-	callback(false)
+	callback(true)
 }
 
 //Reader :- read msg from kafka
