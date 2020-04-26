@@ -61,13 +61,15 @@ func (c *Config) Write(message string, callback func(bool)) {
 func (c *Config) Reader(readMessageCallback func(reader *kafka.Reader, m kafka.Message)) {
 
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:   []string{c.URL},
-		Topic:     c.Topic,
-		Partition: c.Partition,
-		MinBytes:  c.MinBytes,
-		MaxBytes:  c.MaxBytes,
-		GroupID:   c.GroupID,
-		MaxWait:   0,
+		Brokers:        []string{c.URL},
+		Topic:          c.Topic,
+		Partition:      c.Partition,
+		MinBytes:       c.MinBytes,
+		MaxBytes:       c.MaxBytes,
+		GroupID:        c.GroupID,
+		MaxWait:        0,
+		ReadBackoffMin: 0,
+		ReadBackoffMax: 0,
 	})
 	ctx := context.Background()
 	prevTime := 0
