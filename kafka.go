@@ -71,10 +71,10 @@ func (c *Config) Reader(readMessageCallback func(reader *kafka.Reader, m kafka.M
 		// ReadBackoffMin: 0,
 		// ReadBackoffMax: 0,
 	})
-	ctx := context.Background()
+	defer r.Close()
 	prevTime := 0
 	for {
-		m, err := r.FetchMessage(ctx)
+		m, err := r.ReadMessage(context.Background())
 		if err != nil {
 			break
 		}
