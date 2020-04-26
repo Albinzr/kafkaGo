@@ -3,6 +3,7 @@ package kafka
 import (
 	"context"
 	"fmt"
+	"time"
 
 	kafka "github.com/segmentio/kafka-go"
 )
@@ -66,7 +67,7 @@ func (c *Config) Reader(readMessageCallback func(reader *kafka.Reader, m kafka.M
 		MinBytes:  c.MinBytes,
 		MaxBytes:  c.MaxBytes,
 		GroupID:   c.GroupID,
-		MaxWait: 0,
+		MaxWait:   0,
 	})
 	ctx := context.Background()
 	prevTime := 0
@@ -76,7 +77,7 @@ func (c *Config) Reader(readMessageCallback func(reader *kafka.Reader, m kafka.M
 			break
 		}
 		recivedTime := time.Now().Nanosecond()
-		fmt.Println("message reciving time gap:" rerecivedTime - prevTime)
+		fmt.Println("message reciving time gap:", rerecivedTime-prevTime)
 		prevTime = recivedTime
 		readMessageCallback(r, m)
 	}
