@@ -66,13 +66,18 @@ func (c *Config) Reader(readMessageCallback func(reader *kafka.Reader, m kafka.M
 		MinBytes:  c.MinBytes,
 		MaxBytes:  c.MaxBytes,
 		GroupID:   c.GroupID,
+		MaxWait: 0,
 	})
 	ctx := context.Background()
+	prevTime := 0
 	for {
 		m, err := r.FetchMessage(ctx)
 		if err != nil {
 			break
 		}
+		recivedTime := time.Now().Nanosecond()
+		fmt.Println("message reciving time gap:" rerecivedTime - prevTime)
+		prevTime = recivedTime
 		readMessageCallback(r, m)
 	}
 
