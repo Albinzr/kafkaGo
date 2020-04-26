@@ -81,7 +81,7 @@ func (c *Config) Reader(readMessageCallback func(reader *kafka.Reader, m kafka.M
 		recivedTime := time.Now().Nanosecond()
 		fmt.Println("message reciving time gap:", recivedTime-prevTime)
 		prevTime = recivedTime
-		readMessageCallback(r, m)
+		go readMessageCallback(r, m)
 	}
 
 }
