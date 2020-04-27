@@ -1,8 +1,10 @@
 package kafka
 
 import (
+	"bufio"
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	kafka "github.com/segmentio/kafka-go"
@@ -47,6 +49,36 @@ func (c *Config) Write(message string, callback func(bool)) {
 		kafka.Message{
 			Value: []byte(message),
 		},
+	)
+
+	if err != nil {
+		callback(false)
+		return
+	}
+
+	callback(true)
+}
+
+//WriteBulk :- func to write bulk amount of data to kafka
+func (c *Config) WriteBulk(message string, callback func(bool)) {
+
+	var msgArray []kafka.Message
+
+	w := kafka.NewWriter(kafka.WriterConfig{
+		Brokers:  []string{c.URL},
+		Topic:    c.Topic,
+		Balancer: &kafka.LeastBytes{},
+	})
+
+	scanner := bufio.NewScanner(strings.NewReader(message))
+	for scanner.Scan() {
+		msg := scanner.Text()
+		kafkaMsg := kafka.Message{Value: []byte(msg)}
+		msgArray = append(msgArray, kafkaMsg)
+	}
+
+	err := w.WriteMessages(context.Background(),
+		msgArray...,
 	)
 
 	if err != nil {
