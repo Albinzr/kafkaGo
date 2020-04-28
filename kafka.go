@@ -65,9 +65,10 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 	var msgArray []kafka.Message
 
 	w := kafka.NewWriter(kafka.WriterConfig{
-		Brokers:  []string{c.URL},
-		Topic:    c.Topic,
-		Balancer: &kafka.LeastBytes{},
+		Brokers:    []string{c.URL},
+		Topic:      c.Topic,
+		Balancer:   &kafka.LeastBytes{},
+		BatchBytes: 999999999999,
 	})
 
 	scanner := bufio.NewScanner(strings.NewReader(message))
@@ -82,6 +83,7 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 	)
 
 	if err != nil {
+		fmt.Println("kafka write error", err)
 		callback(false)
 		return
 	}
