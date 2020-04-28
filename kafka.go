@@ -84,10 +84,10 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 
 	fmt.Println("kafka4")
 	if err != nil {
+		fmt.Println("kafka5e")
 		fmt.Println("kafka write error", err)
 		callback(false)
 		return
-		fmt.Println("kafka5e")
 	}
 	fmt.Println("kafka6t")
 	callback(true)
