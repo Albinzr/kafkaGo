@@ -61,7 +61,7 @@ func (c *Config) Write(message string, callback func(bool)) {
 
 //WriteBulk :- func to write bulk amount of data to kafka
 func (c *Config) WriteBulk(message string, callback func(bool)) {
-	fmt.Println("kafka1")
+
 	var msgArray []kafka.Message
 
 	w := kafka.NewWriter(kafka.WriterConfig{
@@ -70,25 +70,33 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 		Balancer:   &kafka.LeastBytes{},
 		BatchBytes: 999999999999,
 	})
-	fmt.Println("kafka2")
+
 	scanner := bufio.NewScanner(strings.NewReader(message))
 	for scanner.Scan() {
 		msg := scanner.Text()
 		kafkaMsg := kafka.Message{Value: []byte(msg)}
 		msgArray = append(msgArray, kafkaMsg)
 	}
-	fmt.Println("kafka3")
-	err := w.WriteMessages(context.Background(),
-		msgArray...,
-	)
 
-	fmt.Println("kafka4")
+	var err error
+	if len(msgArray) > 0 {
+		fmt.Println("kafkaAll****")
+		err = w.WriteMessages(context.Background(),
+			msgArray...,
+		)
+	} else {
+		fmt.Println("kafkSingle****")
+		err = w.WriteMessages(context.Background(),
+			kafka.Message{Value: []byte(message)},
+		)
+	}
+
 	if err != nil {
-		fmt.Println("kafka5e")
 		fmt.Println("kafka write error", err)
 		callback(false)
 		return
 	}
+
 	fmt.Println("kafka6t")
 	callback(true)
 }
