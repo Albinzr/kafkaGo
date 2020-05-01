@@ -73,12 +73,13 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 	})
 
 	scanner := bufio.NewScanner(strings.NewReader(message))
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 1024*1024*15)
 	for scanner.Scan() {
 		msg := scanner.Text()
 		kafkaMsg := kafka.Message{Value: []byte(msg)}
 		msgArray = append(msgArray, kafkaMsg)
 	}
-
 	var err error
 	if len(msgArray) > 0 {
 		fmt.Println("kafkaAll****")
