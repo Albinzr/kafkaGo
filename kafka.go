@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -86,6 +87,11 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 		)
 	} else {
 		fmt.Println("kafkSingle****")
+
+		file, _ := os.OpenFile("kafka"+time.Now().String()+".txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
+		file.WriteString(message)
+		file.Close()
+
 		err = w.WriteMessages(context.Background(),
 			kafka.Message{Value: []byte(message)},
 		)
