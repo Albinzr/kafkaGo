@@ -69,7 +69,7 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 		Brokers:    []string{c.URL},
 		Topic:      c.Topic,
 		Balancer:   &kafka.LeastBytes{},
-		BatchBytes: 999999999999,
+		BatchBytes: 99999999,
 	})
 
 	scanner := bufio.NewScanner(strings.NewReader(message))
@@ -80,6 +80,7 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 		kafkaMsg := kafka.Message{Value: []byte(msg)}
 		msgArray = append(msgArray, kafkaMsg)
 	}
+	buf = []
 	var err error
 	if len(msgArray) > 0 {
 		fmt.Println("kafkaAll****")
