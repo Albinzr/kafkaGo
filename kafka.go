@@ -80,6 +80,7 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 		kafkaMsg := kafka.Message{Value: []byte(msg)}
 		msgArray = append(msgArray, kafkaMsg)
 	}
+
 	buf = nil
 	var err error
 	if len(msgArray) > 0 {
