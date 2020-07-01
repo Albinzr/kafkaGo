@@ -139,3 +139,24 @@ func Commit(r *kafka.Reader, m kafka.Message) {
 	ctx := context.Background()
 	r.CommitMessages(ctx, m)
 }
+
+func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kafka.Reader, m kafka.Message)) {
+	r := kafka.NewReader(kafka.ReaderConfig{
+		Brokers:   []string{c.URL},
+		Topic:     c.Topic,
+		Partition: c.Partition,
+		MinBytes:  c.MinBytes,
+		MaxBytes:  c.MaxBytes,
+		GroupID:   c.GroupID,
+	})
+
+	ctx := context.Background()
+	for i:=0; i>=limit; i++ {
+		m, err := r.FetchMessage(ctx)
+		if err != nil {
+			break
+		}
+		readMessageCallback(r, m)
+	}
+	r.Close()
+}
