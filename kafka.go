@@ -109,7 +109,7 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 }
 
 //Reader :- read msg from kafka
-func (c *Config) GetReader(readMessageCallback func(reader *kafka.Reader, m kafka.Message)) {
+func (c *Config) Reader(readMessageCallback func(reader *kafka.Reader, m kafka.Message)) {
 
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:   []string{c.URL},
