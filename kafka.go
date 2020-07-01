@@ -84,12 +84,10 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 	buf = nil
 	var err error
 	if len(msgArray) > 0 {
-		fmt.Println("kafkaAll****")
 		err = w.WriteMessages(context.Background(),
 			msgArray...,
 		)
 	} else {
-		fmt.Println("kafkSingle****")
 
 		file, _ := os.OpenFile("kafka"+time.Now().String()+".txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
 		file.WriteString(message)
@@ -125,15 +123,11 @@ func (c *Config) Reader(readMessageCallback func(reader *kafka.Reader, m kafka.M
 		// ReadBackoffMax: 0,
 	})
 	ctx := context.Background()
-	prevTime := 0
-	for {
+	for i:=0; i<=100; i++{
 		m, err := r.FetchMessage(ctx)
 		if err != nil {
 			break
 		}
-		recivedTime := time.Now().Nanosecond()
-		fmt.Println("message reciving time gap:", recivedTime-prevTime)
-		prevTime = recivedTime
 		readMessageCallback(r, m)
 	}
 
