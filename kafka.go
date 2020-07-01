@@ -158,5 +158,5 @@ func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kaf
 		}
 		readMessageCallback(r, m)
 	}
-	r.Close()
+	//r.Close()
 }
