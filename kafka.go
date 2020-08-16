@@ -25,7 +25,7 @@ type Config struct {
 	GroupID               string
 	MinBytes              int
 	MaxBytes              int
-	ReadWithLimitFinished func(bool)
+	ReadWithLimitFinished bool
 }
 
 //IsKafkaReady :- Check if kafka is ready for connection
@@ -76,6 +76,7 @@ func (c *Config) WriteBulk(message string, callback func(bool)) {
 	scanner := bufio.NewScanner(strings.NewReader(message))
 	buf := make([]byte, 0, 64*1024)
 	scanner.Buffer(buf, 1024*1024*15)
+
 	for scanner.Scan() {
 		msg := scanner.Text()
 		kafkaMsg := kafka.Message{Value: []byte(msg)}
@@ -143,6 +144,7 @@ func Commit(r *kafka.Reader, m kafka.Message) {
 
 //ReaderWithLimit :-  read data with msg limit
 func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kafka.Reader, m kafka.Message)) {
+	c.ReadWithLimitFinished = true
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:   []string{c.URL},
 		Topic:     c.Topic,
@@ -160,5 +162,5 @@ func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kaf
 		}
 		readMessageCallback(r, m)
 	}
-	c.ReadWithLimitFinished(true)
+	c.ReadWithLimitFinished = true
 }
