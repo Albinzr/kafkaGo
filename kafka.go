@@ -152,7 +152,7 @@ func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kaf
 	})
 
 	ctx := context.Background()
-	for i := 0; i >= limit; i++ {
+	for i := 0; i <= limit; i++ {
 		m, err := r.FetchMessage(ctx)
 		if err != nil {
 			break
