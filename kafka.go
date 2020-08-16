@@ -19,12 +19,13 @@ type Reader = *kafka.Reader
 
 //Config :- kafka config info
 type Config struct {
-	Topic     string
-	Partition int
-	URL       string
-	GroupID   string
-	MinBytes  int
-	MaxBytes  int
+	Topic                 string
+	Partition             int
+	URL                   string
+	GroupID               string
+	MinBytes              int
+	MaxBytes              int
+	ReadWithLimitFinished func(bool)
 }
 
 //IsKafkaReady :- Check if kafka is ready for connection
@@ -159,4 +160,5 @@ func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kaf
 		}
 		readMessageCallback(r, m)
 	}
+	c.ReadWithLimitFinished(true)
 }
