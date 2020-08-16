@@ -144,6 +144,7 @@ func Commit(r *kafka.Reader, m kafka.Message) {
 
 //ReaderWithLimit :-  read data with msg limit
 func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kafka.Reader, m kafka.Message)) {
+	fmt.Println("reading............")
 	c.ReadWithLimitFinished = false
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:   []string{c.URL},
@@ -163,6 +164,7 @@ func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kaf
 		readMessageCallback(r, m)
 	}
 	defer func() {
+		fmt.Println("reading  Finished............")
 		c.ReadWithLimitFinished = true
 	}()
 
