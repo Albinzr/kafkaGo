@@ -26,6 +26,7 @@ type Config struct {
 	MinBytes              int
 	MaxBytes              int
 	ReadWithLimitFinished bool
+	ReadNextBucket        func()
 }
 
 //IsKafkaReady :- Check if kafka is ready for connection
@@ -137,9 +138,13 @@ func (c *Config) Reader(readMessageCallback func(reader *kafka.Reader, m kafka.M
 }
 
 //Commit :- commit msg to kafka
-func Commit(r *kafka.Reader, m kafka.Message) {
+func (c *Config) Commit(r *kafka.Reader, m []kafka.Message) {
 	ctx := context.Background()
-	r.CommitMessages(ctx, m)
+	for i := 0; i <= len(m); i++ {
+		r.CommitMessages(ctx, m[i])
+	}
+	r.Close()
+	c.ReadNextBucket()
 }
 
 //ReaderWithLimit :-  read data with msg limit
@@ -164,7 +169,6 @@ func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kaf
 		}
 		readMessageCallback(r, m)
 	}
-	r.Close()
 	defer func() {
 		fmt.Println("reading  Finished............")
 		c.ReadWithLimitFinished = true
