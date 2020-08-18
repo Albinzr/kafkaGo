@@ -172,6 +172,7 @@ func (c *Config) ReaderWithLimit(limit int, readMessageCallback func(reader *kaf
 	}
 	defer func() {
 		fmt.Println("reading  Finished............")
+		r.Close()
 		c.ReadWithLimitFinished = true
 	}()
 
